@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - StickyNotes{% endblock %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 400px;">
+    <h2 style="margin-bottom:1.5rem; text-align:center;">Welcome Back 👋</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div style="color: #ef4444; font-size: 0.85rem; margin-bottom: 1rem;">
+                {{ form.non_field_errors|striptags }}
+            </div>
+        {% endif %}
+        
+        {% for field in form %}
+            <div style="margin-bottom: 1rem;">
+                <label style="display:block;margin-bottom:0.5rem;">{{ field.label }}</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+        
+        <button type="submit" class="btn-primary" style="width:100%; margin-top:1rem;">Login</button>
+    </form>
+    
+    <div style="text-align:center; margin-top: 1.5rem; font-size: 0.9rem; color: #94a3b8;">
+        Don't have an account? <a href="{% url 'register' %}" style="color: var(--accent); text-decoration:none; font-weight:600;">Sign up</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}My Notes - StickyNotes{% endblock %}
+
+{% block extra_css %}
+<style>
+    .notes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+    
+    .sticky-note {
+        padding: 1.5rem;
+        border-radius: 12px;
+        min-height: 250px;
+        display: flex;
+        flex-direction: column;
+        color: #1e293b;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .sticky-note:hover {
+        transform: translateY(-5px) scale(1.02) rotate(-1deg);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        z-index: 10;
+    }
+
+    .sticky-note::after {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        border-width: 0 30px 30px 0;
+        border-style: solid;
+        border-color: rgba(0,0,0,0.1) white;
+        display: block;
+        width: 0;
+        box-shadow: -2px 2px 2px rgba(0,0,0,0.1);
+        border-bottom-left-radius: 4px;
+    }
+
+    .note-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        border-bottom: 2px dashed rgba(0,0,0,0.1);
+        padding-bottom: 0.5rem;
+        width: 100%;
+        color: #0f172a;
+    }
+
+    .note-content {
+        flex: 1;
+        font-size: 1rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        color: #334155;
+    }
+
+    .note-footer {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: rgba(0,0,0,0.5);
+        border-top: 1px solid rgba(0,0,0,0.1);
+        padding-top: 0.5rem;
+    }
+
+    .note-actions a {
+        color: #0f172a;
+        text-decoration: none;
+        margin-left: 0.5rem;
+        font-weight: 600;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+    
+    .note-actions a:hover {
+        opacity: 1;
+    }
+
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .header-actions h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--card-glass);
+        border-radius: 16px;
+        border: 1px solid var(--card-border);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header-actions">
+    <h1>My Sticky Notes</h1>
+    <a href="{% url 'note_create' %}" class="btn-primary">✨ Create Note</a>
+</div>
+
+{% if notes %}
+<div class="notes-grid">
+    {% for note in notes %}
+    <div class="sticky-note" style="background-color: {{ note.color }};">
+        <div class="note-title">{{ note.title }}</div>
+        <div class="note-content">{{ note.content }}</div>
+        <div class="note-footer">
+            <span>{{ note.updated_at|date:"M d, Y" }}</span>
+            <div class="note-actions">
+                <a href="{% url 'note_edit' note.pk %}">Edit</a>
+                <a href="{% url 'note_delete' note.pk %}" style="color: #dc2626;">Del</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <h2 style="font-size:1.5rem; margin-bottom:1rem;">No notes yet!</h2>
+    <p style="color:#94a3b8; margin-bottom:2rem;">Create your first sticky note to get started.</p>
+    <a href="{% url 'note_create' %}" class="btn-primary">Create Note</a>
+</div>
+{% endif %}
+{% endblock %}
